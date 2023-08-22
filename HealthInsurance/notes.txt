@@ -1,0 +1,34 @@
+sql migrations - sql tools
+api endpoints test - swashbuckle swagger
+ORM - entity framework
+authentication/authorization -aspnetcore.authentication.jwtbearer
+
+- Swashbuckle.aspnetcore.swagger.ui
+- Swashbuckle.aspnetcore.annotations
+- Microsoft.aspnetcore.authentication.jwtbearer
+- Microsoft.EntityFrameworkCore.sqlserver
+- Microsoft.EntityFrameworkCore.tools
+
+Add service to program.cs:
+builder.Services.AddDbContext<ApplicationDbContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+- when performing data migrationi commands, it should be on the prject that has the applicationdbcontext. That's where the database is migrated from.
+
+Add db configuration to appsettings.json:
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.\\;Database=HealthInsurance;Trusted_Connection=True;MultipleActiveResultSets=true"
+  },
+
+
+Do your migration by:
+- opening PM console. Make sure default project is the once containing ApplicationDbContect.cs file (Mango.Services.ProductAPI)
+- add-migration AddProductModelToDb
+- update-database
+
+
+register the jwtservice in program.cs middleware:
+app.MapGet("/security/getMessage",
+() => "Hello World!").RequireAuthorization();
+
+Add key to appsettings.json:
+
