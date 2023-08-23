@@ -27,8 +27,44 @@ Do your migration by:
 
 
 register the jwtservice in program.cs middleware:
-app.MapGet("/security/getMessage",
-() => "Hello World!").RequireAuthorization();
+First Add key to appsettings.json:
+  "Jwt": {
+    "Issuer": "https://crosquaretwenty.com",
+    "Audience": "https://crosquaretwenty.com",
+    "Key": "This is nothing but a sample. Change in production abeg"
+  }
 
-Add key to appsettings.json:
+Then register service and enable authentication and authorization:
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey
+        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = false,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = Debugger.IsAttached ? TimeSpan.Zero : TimeSpan.FromMinutes(10)
+    };
+});
+builder.Services.AddAuthentication();
+
+
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+
+Create model to store username and password to login in API:
+public class LoginThings
+{
+    public string UserName { get; set; }
+    public string Password { get; set; }
+}
 

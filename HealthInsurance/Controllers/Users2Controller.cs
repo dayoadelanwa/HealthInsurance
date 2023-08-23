@@ -6,11 +6,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HealthInsurance;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace HealthInsurance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class Users2Controller : ControllerBase
     {
         private readonly ApplicationDbContext _context;
